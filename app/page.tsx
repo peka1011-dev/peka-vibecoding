@@ -1,65 +1,180 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:from-black dark:via-zinc-950 dark:to-zinc-900">
+      {/* 히어로 섹션 */}
+      <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          {/* 메인 타이틀 */}
+          <div className={`mb-12 text-center transition-opacity duration-1000 ${mounted ? "opacity-100" : "opacity-0"}`}>
+            <h1 className="mb-4 text-6xl font-bold tracking-tight text-black dark:text-white sm:text-7xl lg:text-8xl">
+              PEKA
+            </h1>
+            <div className="mb-6 inline-block rounded-full bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 px-6 py-2 text-sm font-semibold text-white shadow-lg">
+              <span className="animate-pulse">⚡</span> Ethical Hacker & Security Researcher
+            </div>
+            <p className="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-600 dark:text-zinc-400 sm:text-2xl">
+              보안을 통해 세상을 더 안전하게 만드는 것을 목표로 하는
+              <br className="hidden sm:block" />
+              <span className="font-semibold text-black dark:text-white">윤리적 해커</span>입니다.
+            </p>
+          </div>
+
+          {/* 프로필 카드 */}
+          <div className={`mb-16 transition-all duration-1000 delay-300 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <div className="rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-xl backdrop-blur-sm dark:border-zinc-800 dark:bg-zinc-900/80 sm:p-12">
+              <div className="grid gap-8 md:grid-cols-2">
+                {/* 소개 */}
+                <div>
+                  <h2 className="mb-4 text-2xl font-bold text-black dark:text-white">About</h2>
+                  <p className="leading-relaxed text-zinc-700 dark:text-zinc-300">
+                    보안 취약점을 발견하고 수정하여 디지털 세계를 더 안전하게 만드는 것을
+                    사명으로 삼고 있습니다. 다양한 보안 연구와 윤리적 해킹 프로젝트를 통해
+                    기업과 개인의 보안을 강화하는 데 기여하고 있습니다.
+                  </p>
+                </div>
+
+                {/* 전문 분야 */}
+                <div>
+                  <h2 className="mb-4 text-2xl font-bold text-black dark:text-white">Expertise</h2>
+                  <ul className="space-y-2 text-zinc-700 dark:text-zinc-300">
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Penetration Testing
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Vulnerability Assessment
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Security Research
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Bug Bounty Hunting
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-green-500">✓</span>
+                      Security Consulting
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 기술 스택 */}
+          <div className={`mb-16 transition-all duration-1000 delay-500 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <h2 className="mb-6 text-center text-3xl font-bold text-black dark:text-white">
+              Skills & Tools
+            </h2>
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+              {[
+                "Kali Linux",
+                "Metasploit",
+                "Burp Suite",
+                "Wireshark",
+                "Nmap",
+                "OWASP",
+                "Python",
+                "JavaScript",
+                "C/C++",
+                "Go",
+                "Docker",
+                "Kubernetes",
+              ].map((skill, index) => (
+                <div
+                  key={skill}
+                  className="group rounded-lg border border-zinc-200 bg-white/60 p-4 text-center transition-all hover:scale-105 hover:border-green-500 hover:bg-green-50 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900/60 dark:hover:bg-green-950/20"
+                  style={{
+                    transitionDelay: `${index * 50}ms`,
+                  }}
+                >
+                  <span className="font-medium text-zinc-800 dark:text-zinc-200">{skill}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 주요 성과 */}
+          <div className={`mb-16 transition-all duration-1000 delay-700 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <h2 className="mb-6 text-center text-3xl font-bold text-black dark:text-white">
+              Achievements
+            </h2>
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                {
+                  title: "보안 취약점 발견",
+                  description: "다수의 기업에서 중요한 보안 취약점을 발견하고 보고",
+                  icon: "🔒",
+                },
+                {
+                  title: "버그 바운티",
+                  description: "HackerOne, Bugcrowd 등에서 활발한 활동",
+                  icon: "🏆",
+                },
+                {
+                  title: "보안 연구",
+                  description: "최신 보안 위협과 방어 기법에 대한 지속적인 연구",
+                  icon: "🔬",
+                },
+              ].map((achievement, index) => (
+                <div
+                  key={achievement.title}
+                  className="rounded-xl border border-zinc-200 bg-white/80 p-6 shadow-lg transition-all hover:scale-105 hover:shadow-xl dark:border-zinc-800 dark:bg-zinc-900/80"
+                >
+                  <div className="mb-3 text-4xl">{achievement.icon}</div>
+                  <h3 className="mb-2 text-xl font-bold text-black dark:text-white">
+                    {achievement.title}
+                  </h3>
+                  <p className="text-zinc-600 dark:text-zinc-400">{achievement.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 연락처 */}
+          <div className={`text-center transition-all duration-1000 delay-1000 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <h2 className="mb-6 text-3xl font-bold text-black dark:text-white">Get in Touch</h2>
+            <p className="mb-8 text-lg text-zinc-600 dark:text-zinc-400">
+              보안 관련 문의나 협업 제안을 환영합니다.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              {[
+                { name: "GitHub", href: "#", icon: "💻" },
+                { name: "LinkedIn", href: "#", icon: "💼" },
+                { name: "Email", href: "mailto:contact@peka.dev", icon: "📧" },
+                { name: "Blog", href: "#", icon: "📝" },
+              ].map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className="group flex items-center gap-2 rounded-full border border-zinc-300 bg-white px-6 py-3 font-medium text-zinc-800 transition-all hover:border-green-500 hover:bg-green-50 hover:text-green-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:border-green-500 dark:hover:bg-green-950/20 dark:hover:text-green-400"
+                >
+                  <span>{link.icon}</span>
+                  <span>{link.name}</span>
+                </a>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* 배경 장식 요소 */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -right-20 -top-20 h-96 w-96 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-400/20 blur-3xl"></div>
+          <div className="absolute -bottom-20 -left-20 h-96 w-96 rounded-full bg-gradient-to-tr from-teal-400/20 to-cyan-400/20 blur-3xl"></div>
         </div>
-      </main>
+      </section>
     </div>
   );
 }
