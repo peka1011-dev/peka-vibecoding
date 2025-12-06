@@ -393,10 +393,8 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               {[
-                { name: "GitHub", href: "#", icon: "💻" },
-                { name: "LinkedIn", href: "#", icon: "💼" },
-                { name: "Email", href: "mailto:contact@peka.dev", icon: "📧" },
-                { name: "Blog", href: "#", icon: "📝" },
+                { name: "GitHub", href: "https://github.com/peka1011-dev/peka-vibecoding", icon: "💻" },
+                { name: "Blog", href: "https://butter0057.tistory.com/", icon: "📝" },
               ].map((link) => (
                 <a
                   key={link.name}
