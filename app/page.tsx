@@ -230,7 +230,7 @@ function HackerGame() {
       }
 
       // 코드 생성 (랜덤하게)
-      if (Math.random() < 0.05) {
+      if (Math.random() < 0.03) {
         setCodes((prev) => [...prev, generateCode()]);
       }
 
@@ -239,7 +239,7 @@ function HackerGame() {
         prev
           .map((code) => ({
             ...code,
-            y: code.y + 2 + score * 0.01, // 점수에 따라 속도 증가
+            y: code.y + 0.8 + score * 0.005, // 점수에 따라 속도 증가 (느리게 조정)
           }))
           .filter((code) => {
             // 충돌 검사
