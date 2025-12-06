@@ -143,6 +143,7 @@ function HackerGame() {
   const gameRef = React.useRef<HTMLDivElement>(null);
   const animationFrameRef = React.useRef<number | undefined>(undefined);
   const lastTimeRef = React.useRef<number>(0);
+  const lastFrameTimeRef = React.useRef<number>(0);
   const keysPressed = React.useRef<{ left: boolean; right: boolean }>({ left: false, right: false });
 
   // 로컬 스토리지에서 랭킹 불러오기
@@ -178,6 +179,7 @@ function HackerGame() {
     setPlayerX(50);
     setCodes([]);
     lastTimeRef.current = Date.now();
+    lastFrameTimeRef.current = Date.now();
     keysPressed.current = { left: false, right: false };
   };
 
@@ -195,6 +197,7 @@ function HackerGame() {
       localStorage.setItem("hackerGameRankings", JSON.stringify(newRankings));
     }
     keysPressed.current = { left: false, right: false };
+    lastFrameTimeRef.current = 0;
   };
 
   // 키보드 입력 처리 (부드러운 이동을 위해 키 상태 추적)
@@ -241,6 +244,8 @@ function HackerGame() {
     const gameLoop = () => {
       const now = Date.now();
       const deltaTime = now - lastTimeRef.current;
+      const frameDelta = lastFrameTimeRef.current > 0 ? now - lastFrameTimeRef.current : 16; // 첫 프레임은 16ms로 가정
+      lastFrameTimeRef.current = now;
       
       // 1초마다 점수 증가
       if (deltaTime >= 1000) {
@@ -248,14 +253,15 @@ function HackerGame() {
         lastTimeRef.current = now;
       }
 
-      // 플레이어 이동 (매 프레임마다 부드럽게)
+      // 플레이어 이동 (시간 기반으로 부드럽게, 속도 조절)
+      const moveSpeed = 0.12; // 퍼센트 이동 속도 (낮출수록 느림, 프레임 델타에 곱함)
       setPlayerX((prev) => {
         let newX = prev;
         if (keysPressed.current.left) {
-          newX = Math.max(10, prev - 2);
+          newX = Math.max(10, prev - moveSpeed * (frameDelta / 16)); // 16ms 기준으로 정규화
         }
         if (keysPressed.current.right) {
-          newX = Math.min(90, prev + 2);
+          newX = Math.min(90, prev + moveSpeed * (frameDelta / 16));
         }
         return newX;
       });
