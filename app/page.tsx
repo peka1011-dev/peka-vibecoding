@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 // 타이핑 효과 컴포넌트
 function TypingText({ text, speed = 50 }: { text: string; speed?: number }) {
@@ -128,6 +128,265 @@ function TerminalCode({ code, delay = 0 }: { code: string; delay?: number }) {
       }`}
     >
       <span className="text-emerald-500">$</span> {code}
+    </div>
+  );
+}
+
+// 해커 코드 회피 게임
+function HackerGame() {
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [score, setScore] = useState(0);
+  const [playerX, setPlayerX] = useState(50); // 화면 중앙 (퍼센트)
+  const [codes, setCodes] = useState<Array<{ id: number; x: number; y: number; text: string }>>([]);
+  const [rankings, setRankings] = useState<Array<{ score: number; date: string }>>([]);
+  const gameRef = React.useRef<HTMLDivElement>(null);
+  const animationFrameRef = React.useRef<number | undefined>(undefined);
+  const lastTimeRef = React.useRef<number>(0);
+
+  // 로컬 스토리지에서 랭킹 불러오기
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("hackerGameRankings");
+      if (saved) {
+        setRankings(JSON.parse(saved));
+      }
+    }
+  }, []);
+
+  // 코드 생성 함수
+  const generateCode = () => {
+    const codeTexts = [
+      "hack()", "exploit", "vulnerability", "malware", "trojan",
+      "phishing", "ddos", "sql_injection", "xss", "csrf",
+      "rootkit", "backdoor", "keylogger", "ransomware", "botnet"
+    ];
+    return {
+      id: Date.now() + Math.random(),
+      x: Math.random() * 80 + 10, // 10%~90% 범위
+      y: -5,
+      text: codeTexts[Math.floor(Math.random() * codeTexts.length)]
+    };
+  };
+
+  // 게임 시작
+  const startGame = () => {
+    setGameStarted(true);
+    setGameOver(false);
+    setScore(0);
+    setPlayerX(50);
+    setCodes([]);
+    lastTimeRef.current = Date.now();
+  };
+
+  // 게임 종료
+  const endGame = () => {
+    setGameOver(true);
+    setGameStarted(false);
+    
+    // 랭킹 저장
+    if (typeof window !== "undefined") {
+      const newRankings = [...rankings, { score, date: new Date().toLocaleDateString() }]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 10); // 상위 10개만 저장
+      setRankings(newRankings);
+      localStorage.setItem("hackerGameRankings", JSON.stringify(newRankings));
+    }
+  };
+
+  // 키보드 입력 처리
+  useEffect(() => {
+    if (!gameStarted) return;
+
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+        setPlayerX((prev) => Math.max(10, prev - 5));
+      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        setPlayerX((prev) => Math.min(90, prev + 5));
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [gameStarted]);
+
+  // 게임 루프
+  useEffect(() => {
+    if (!gameStarted) {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      return;
+    }
+
+    const gameLoop = () => {
+      const now = Date.now();
+      const deltaTime = now - lastTimeRef.current;
+      
+      // 1초마다 점수 증가
+      if (deltaTime >= 1000) {
+        setScore((prev) => prev + 1);
+        lastTimeRef.current = now;
+      }
+
+      // 코드 생성 (랜덤하게)
+      if (Math.random() < 0.05) {
+        setCodes((prev) => [...prev, generateCode()]);
+      }
+
+      // 코드 이동
+      setCodes((prev) =>
+        prev
+          .map((code) => ({
+            ...code,
+            y: code.y + 2 + score * 0.01, // 점수에 따라 속도 증가
+          }))
+          .filter((code) => {
+            // 충돌 검사
+            const playerLeft = playerX - 5;
+            const playerRight = playerX + 5;
+            const codeLeft = code.x;
+            const codeRight = code.x + 10;
+            const playerTop = 85;
+            const playerBottom = 95;
+            const codeTop = code.y;
+            const codeBottom = code.y + 5;
+
+            if (
+              codeTop < playerBottom &&
+              codeBottom > playerTop &&
+              codeLeft < playerRight &&
+              codeRight > playerLeft
+            ) {
+              endGame();
+              return false;
+            }
+
+            // 화면 밖으로 나간 코드 제거
+            return code.y < 100;
+          })
+      );
+
+      animationFrameRef.current = requestAnimationFrame(gameLoop);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(gameLoop);
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [gameStarted, score, playerX]);
+
+  return (
+    <div className="mb-16 rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-xl backdrop-blur-sm dark:border-green-500/30 dark:bg-zinc-900/80 sm:p-12">
+      <h2 className="mb-6 text-center font-mono text-3xl font-bold text-black dark:text-green-400">
+        <GlitchText>플레이</GlitchText>
+      </h2>
+      
+      {!gameStarted && !gameOver && (
+        <div className="text-center">
+          <p className="mb-6 font-mono text-zinc-700 dark:text-zinc-300">
+            해커의 코드를 피하세요! 좌우 화살표 키 또는 A/D 키로 이동합니다.
+          </p>
+          <button
+            onClick={startGame}
+            className="rounded-full border border-green-500 bg-green-500 px-8 py-3 font-mono font-bold text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/50 dark:bg-green-600 dark:hover:bg-green-500"
+          >
+            게임 시작
+          </button>
+        </div>
+      )}
+
+      {gameOver && (
+        <div className="text-center">
+          <p className="mb-4 font-mono text-2xl font-bold text-red-500">
+            게임 오버!
+          </p>
+          <p className="mb-6 font-mono text-xl text-zinc-700 dark:text-zinc-300">
+            점수: {score}점
+          </p>
+          <button
+            onClick={startGame}
+            className="rounded-full border border-green-500 bg-green-500 px-8 py-3 font-mono font-bold text-white transition-all hover:bg-green-600 hover:shadow-lg hover:shadow-green-500/50 dark:bg-green-600 dark:hover:bg-green-500"
+          >
+            다시 시작
+          </button>
+        </div>
+      )}
+
+      {gameStarted && (
+        <div className="space-y-4">
+          <div className="flex justify-between font-mono text-lg text-zinc-700 dark:text-zinc-300">
+            <span>점수: {score}</span>
+            <span>생존 시간: {Math.floor(score)}초</span>
+          </div>
+          <div
+            ref={gameRef}
+            className="relative h-96 overflow-hidden rounded-lg border-2 border-green-500/50 bg-zinc-950"
+            style={{ minHeight: "400px" }}
+          >
+            {/* 떨어지는 코드들 */}
+            {codes.map((code) => (
+              <div
+                key={code.id}
+                className="absolute font-mono text-xs text-red-500"
+                style={{
+                  left: `${code.x}%`,
+                  top: `${code.y}%`,
+                  textShadow: "0 0 10px rgba(239, 68, 68, 0.8)",
+                }}
+              >
+                {code.text}
+              </div>
+            ))}
+
+            {/* 플레이어 */}
+            <div
+              className="absolute bottom-4 font-mono text-lg text-green-400 transition-all"
+              style={{
+                left: `${playerX}%`,
+                transform: "translateX(-50%)",
+                textShadow: "0 0 20px rgba(34, 197, 94, 1)",
+              }}
+            >
+              &gt;_&lt;
+            </div>
+
+            {/* 안내 텍스트 */}
+            <div className="absolute left-4 top-4 font-mono text-xs text-zinc-500">
+              좌우 화살표 키 또는 A/D로 이동
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 랭킹 */}
+      {rankings.length > 0 && (
+        <div className="mt-8">
+          <h3 className="mb-4 font-mono text-xl font-bold text-black dark:text-green-400">
+            랭킹
+          </h3>
+          <div className="space-y-2">
+            {rankings.slice(0, 5).map((ranking, index) => (
+              <div
+                key={index}
+                className="flex justify-between rounded-lg border border-zinc-300 bg-white/60 p-3 font-mono text-sm dark:border-zinc-700 dark:bg-zinc-800/60"
+              >
+                <span className="text-zinc-700 dark:text-zinc-300">
+                  {index + 1}위
+                </span>
+                <span className="font-bold text-green-600 dark:text-green-400">
+                  {ranking.score}점
+                </span>
+                <span className="text-xs text-zinc-500">
+                  {ranking.date}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -409,6 +668,11 @@ export default function Home() {
                 </a>
               ))}
             </div>
+          </div>
+
+          {/* 플레이 게임 */}
+          <div className={`transition-all duration-1000 delay-1100 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <HackerGame />
           </div>
         </div>
 
