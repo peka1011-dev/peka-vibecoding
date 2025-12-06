@@ -143,6 +143,7 @@ function HackerGame() {
   const gameRef = React.useRef<HTMLDivElement>(null);
   const animationFrameRef = React.useRef<number | undefined>(undefined);
   const lastTimeRef = React.useRef<number>(0);
+  const keysPressed = React.useRef<{ left: boolean; right: boolean }>({ left: false, right: false });
 
   // 로컬 스토리지에서 랭킹 불러오기
   useEffect(() => {
@@ -177,6 +178,7 @@ function HackerGame() {
     setPlayerX(50);
     setCodes([]);
     lastTimeRef.current = Date.now();
+    keysPressed.current = { left: false, right: false };
   };
 
   // 게임 종료
@@ -192,22 +194,39 @@ function HackerGame() {
       setRankings(newRankings);
       localStorage.setItem("hackerGameRankings", JSON.stringify(newRankings));
     }
+    keysPressed.current = { left: false, right: false };
   };
 
-  // 키보드 입력 처리
+  // 키보드 입력 처리 (부드러운 이동을 위해 키 상태 추적)
   useEffect(() => {
     if (!gameStarted) return;
 
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
-        setPlayerX((prev) => Math.max(10, prev - 5));
+        keysPressed.current.left = true;
+        e.preventDefault();
       } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
-        setPlayerX((prev) => Math.min(90, prev + 5));
+        keysPressed.current.right = true;
+        e.preventDefault();
       }
     };
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") {
+        keysPressed.current.left = false;
+        e.preventDefault();
+      } else if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        keysPressed.current.right = false;
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [gameStarted]);
 
   // 게임 루프
@@ -228,6 +247,18 @@ function HackerGame() {
         setScore((prev) => prev + 1);
         lastTimeRef.current = now;
       }
+
+      // 플레이어 이동 (매 프레임마다 부드럽게)
+      setPlayerX((prev) => {
+        let newX = prev;
+        if (keysPressed.current.left) {
+          newX = Math.max(10, prev - 2);
+        }
+        if (keysPressed.current.right) {
+          newX = Math.min(90, prev + 2);
+        }
+        return newX;
+      });
 
       // 코드 생성 (랜덤하게)
       if (Math.random() < 0.03) {
@@ -276,7 +307,7 @@ function HackerGame() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [gameStarted, score, playerX]);
+  }, [gameStarted, score]);
 
   return (
     <div className="mb-16 rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-xl backdrop-blur-sm dark:border-green-500/30 dark:bg-zinc-900/80 sm:p-12">
