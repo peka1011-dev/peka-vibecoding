@@ -239,6 +239,68 @@ export default function Home() {
             </div>
           </div>
 
+          {/* 사이버 보안 가이드 - 정보성 컨텐츠 */}
+          <div className={`mb-16 transition-all duration-1000 delay-400 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
+            <div className="rounded-2xl border border-zinc-200 bg-white/80 p-8 shadow-xl backdrop-blur-sm dark:border-green-500/30 dark:bg-zinc-900/80 sm:p-12">
+              <h2 className="mb-6 font-mono text-3xl font-bold text-black dark:text-green-400">
+                <GlitchText>사이버 보안 기초 가이드</GlitchText>
+              </h2>
+              <div className="space-y-6 font-mono leading-relaxed text-zinc-700 dark:text-zinc-300">
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-black dark:text-white dark:text-green-400">
+                    사이버 보안이란 무엇인가요?
+                  </h3>
+                  <p className="mb-4">
+                    사이버 보안은 컴퓨터 시스템, 네트워크, 데이터를 보호하기 위한 실천 방법과 기술을 의미합니다. 
+                    디지털 시대에 개인 정보, 금융 데이터, 기업 기밀 등 중요한 정보들이 인터넷을 통해 전송되고 저장되면서, 
+                    이러한 정보를 보호하는 것이 점점 더 중요해지고 있습니다. 사이버 보안은 해커, 바이러스, 악성 소프트웨어 등 
+                    다양한 위협으로부터 디지털 자산을 보호하는 종합적인 접근 방식을 포함합니다.
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-black dark:text-white dark:text-green-400">
+                    일반적인 사이버 위협 유형
+                  </h3>
+                  <p className="mb-4">
+                    오늘날 가장 흔한 사이버 위협 중 하나는 피싱 공격입니다. 피싱은 악의적인 이메일이나 메시지를 통해 
+                    개인 정보를 탈취하려는 시도입니다. 랜섬웨어는 컴퓨터의 파일을 암호화하고 몸값을 요구하는 악성 소프트웨어로, 
+                    기업과 개인 모두에게 심각한 피해를 줄 수 있습니다. 또한 DDoS 공격은 서버에 과도한 트래픽을 보내 
+                    정상적인 서비스를 방해하는 공격입니다. 소셜 엔지니어링은 사람의 심리적 약점을 이용해 보안 정보를 얻는 기법으로, 
+                    기술적 결함보다 인간의 실수를 노린다는 점에서 더욱 교묘합니다.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-black dark:text-white dark:text-green-400">
+                    개인을 위한 보안 실천 방법
+                  </h3>
+                  <p className="mb-4">
+                    강력한 비밀번호 사용은 사이버 보안의 첫 번째 단계입니다. 최소 12자 이상의 복잡한 비밀번호를 사용하고, 
+                    여러 계정에 동일한 비밀번호를 사용하지 않는 것이 중요합니다. 패스워드 매니저를 활용하면 안전하게 비밀번호를 관리할 수 있습니다. 
+                    또한 2단계 인증(2FA)을 활성화하면 계정 보안을 크게 향상시킬 수 있습니다. 정기적인 소프트웨어 업데이트는 보안 패치를 적용하여 
+                    알려진 취약점을 수정하므로 매우 중요합니다. 의심스러운 이메일이나 링크를 클릭하지 않고, 
+                    공용 Wi-Fi에서는 VPN을 사용하는 것도 좋은 보안 습관입니다.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="mb-3 text-xl font-bold text-black dark:text-white dark:text-green-400">
+                    윤리적 해킹의 중요성
+                  </h3>
+                  <p className="mb-4">
+                    윤리적 해킹은 합법적이고 합의된 범위 내에서 시스템의 보안 취약점을 찾아내는 과정입니다. 
+                    악의적인 해커가 이용하기 전에 보안 취약점을 발견하고 수정함으로써 실제 피해를 예방할 수 있습니다. 
+                    침투 테스트(Penetration Testing)는 시스템의 보안을 평가하는 체계적인 방법으로, 
+                    기업들이 자신의 보안 수준을 파악하고 개선할 수 있도록 돕습니다. 버그 바운티 프로그램은 
+                    보안 연구자들이 취약점을 발견하고 보고하면 보상을 제공하는 제도로, 
+                    전 세계의 보안 전문가들과 협력하여 더 안전한 디지털 환경을 만들고 있습니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* 기술 스택 */}
           <div className={`mb-16 transition-all duration-1000 delay-500 ${mounted ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"}`}>
             <h2 className="mb-6 text-center font-mono text-3xl font-bold text-black dark:text-white">
